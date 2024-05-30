@@ -1,0 +1,24 @@
+project:
+  type: website
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: true
+
+website:
+  twitter-card: true
+  open-graph: true
+  repo-actions: [issue]
+  favicon: favicon.png
+  navbar:
+    background: primary
+    search: true
+    right:
+      - icon: github
+        href: "https://github.com/eigenvivek/DiffDRR-Datasets"
+  sidebar:
+    style: floating
+
+metadata-files: [nbdev.yml, sidebar.yml]

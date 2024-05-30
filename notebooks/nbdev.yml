@@ -1,0 +1,9 @@
+project:
+  output-dir: _docs
+
+website:
+  title: "diffdrrdata"
+  site-url: "https://eigenvivek.github.io/DiffDRR-Datasets"
+  description: "Open-source 2D/3D registration datasets and dataloaders for DiffDRR"
+  repo-branch: main
+  repo-url: "https://github.com/eigenvivek/DiffDRR-Datasets"

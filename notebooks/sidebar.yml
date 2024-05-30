@@ -1,0 +1,6 @@
+website:
+  sidebar:
+    contents:
+      - index.ipynb
+      - 00_deepfluoro.ipynb
+      - 01_utils.ipynb

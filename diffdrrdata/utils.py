@@ -28,14 +28,14 @@ def load_file(filename: str):
         except FileNotFoundError:
             print(f"Downloading DeepFluoro dataset (~2.5 GB) to {file_path}")
             download_deepfluoro()
-            load_file("ipcai_2020_full_res_data.h5")
+            f = h5py.File(file_path)
     elif filename == "ljubljana.h5":
         try:
             f = h5py.File(file_path)
         except FileNotFoundError:
-            print("Downloading Ljubljana dataset")
+            print(f"Downloading DeepFluoro dataset (~2.5 GB) to {file_path}")
             download_ljubljana()
-            load_file("ljubljana.h5")
+            f = h5py.File(file_path)
     else:
         raise ValueError(f"Unrecognized filename {filename}")
 

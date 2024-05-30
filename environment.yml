@@ -1,8 +1,4 @@
 name: diffdrr
-channels:
-  - conda-forge
-  - pytorch
-  - nvidia
 dependencies:
   - pip:
     - diffdrr

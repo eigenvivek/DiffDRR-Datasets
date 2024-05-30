@@ -1,5 +1,8 @@
 name: diffdrr
+channels:
+  - conda-forge
 dependencies:
+  - pip
+  - h5py
   - pip:
     - diffdrr
-    - h5py

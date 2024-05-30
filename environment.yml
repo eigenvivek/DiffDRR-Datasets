@@ -1,0 +1,9 @@
+name: diffdrr
+channels:
+  - conda-forge
+  - pytorch
+  - nvidia
+dependencies:
+  - pip:
+    - diffdrr
+    - h5py

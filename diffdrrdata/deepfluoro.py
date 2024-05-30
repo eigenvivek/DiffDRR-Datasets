@@ -20,7 +20,7 @@ from .utils import load_file
 
 # %% ../notebooks/00_deepfluoro.ipynb 5
 class DeepFluoroDataset(torch.utils.data.Dataset):
-    """
+    r"""
     A `torch.utils.data.Dataset` that stores the imaging data for subjects
     in the `DeepFluoro` dataset and provides an iterator over the X-ray
     fluoroscopy images and associated poses for each subject. Imaging data

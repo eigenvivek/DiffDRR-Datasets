@@ -105,8 +105,8 @@ plt.show()
 
 ### `Ljubljana`
 
-`Ljubljana` ([Mitrovic et al.,
-2013](https://ieeexplore.ieee.org/abstract/document/6507588)) provides
+`Ljubljana` (**[Mitrovic et al.,
+2013](https://ieeexplore.ieee.org/abstract/document/6507588)**) provides
 paired 2D/3D digital subtraction angiography (DSA) images. The data were
 collected from 10 patients undergoing endovascular image-guided
 interventions at the University of Ljubljana. Ground truth camera poses

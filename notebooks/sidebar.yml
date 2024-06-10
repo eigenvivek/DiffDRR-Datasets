@@ -4,3 +4,4 @@ website:
       - index.ipynb
       - 00_deepfluoro.ipynb
       - 01_utils.ipynb
+      - deepfluoro_camera_poses.html

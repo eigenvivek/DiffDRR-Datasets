@@ -42,11 +42,10 @@ please cite our paper:
 We provide APIs to load the following open-source datasets into
 `DiffDRR`:
 
-| **Dataset**                                                         | **Anatomy** | **\# of Subjects** | **\# of 2D Images** | **CTs** | **X-rays** | Fiducials |
-|---------------------------------------------------------------------|-------------|:------------------:|:-------------------:|:-------:|:----------:|:---------:|
-| [`DeepFluoro`](https://github.com/rg2/DeepFluoroLabeling-IPCAI2020) | pelvis      |         6          |         366         |   ✅    |     ✅     |    ❌     |
-
-<!-- | [`Ljubljana`](https://lit.fe.uni-lj.si/en/research/resources/3D-2D-GS-CA/) | neurovasculature   |         10         |         20          |   ✅    |     ✅     |    ✅     | -->
+| **Dataset**                                                                | **Anatomy**      | **\# of Subjects** | **\# of 2D Images** | **CTs** | **X-rays** | Fiducials |
+|----------------------------------------------------------------------------|------------------|:------------------:|:-------------------:|:-------:|:----------:|:---------:|
+| [`DeepFluoro`](https://github.com/rg2/DeepFluoroLabeling-IPCAI2020)        | pelvis           |         6          |         366         |   ✅    |     ✅     |    ❌     |
+| [`Ljubljana`](https://lit.fe.uni-lj.si/en/research/resources/3D-2D-GS-CA/) | neurovasculature |         10         |         20          |   ✅    |     ✅     |    ✅     |
 
 If you use any of these datasets, please cite the original papers.
 
@@ -70,3 +69,86 @@ registration process. A visualization of the X-ray / CT pairs in the
       year={2020},
       publisher={Springer}
     }
+
+``` python
+import matplotlib.pyplot as plt
+import torch
+from diffdrr.drr import DRR
+from diffdrr.visualization import plot_drr
+
+from diffdrrdata.deepfluoro import DeepFluoroDataset, Transforms
+
+# Load a subject from the DeepFluoroDataset
+deepfluoro = DeepFluoroDataset(id_number=1, bone_attenuation_multiplier=2.5)
+
+# Initialize the DRR module
+subsample = 4
+drr = DRR(
+    deepfluoro.subject,
+    deepfluoro.focal_len,
+    deepfluoro.height // subsample,
+    deepfluoro.delx * subsample,
+    x0=deepfluoro.x0,
+    y0=deepfluoro.y0,
+)
+transform = Transforms(deepfluoro.height // subsample)
+
+# Render a DRR from the ground truth camera pose
+gt, pose = deepfluoro[0]
+img = drr(pose)
+gt, img = transform(gt), transform(img)
+plot_drr(torch.concat([gt, img]), title=["Downsampled X-ray", "DRR"])
+plt.show()
+```
+
+![](index_files/figure-commonmark/cell-2-output-1.png)
+
+### `Ljubljana`
+
+`Ljubljana` (**[Mitrovic et al.,
+2013](https://ieeexplore.ieee.org/abstract/document/6507588)**) provides
+paired 2D/3D digital subtraction angiography (DSA) images. The data were
+collected from 10 patients undergoing endovascular image-guided
+interventions at the University of Ljubljana. Ground truth camera poses
+were estimated by registering surface fiducial markers.
+
+    @article{pernus20133d,
+      title={3D-2D registration of cerebral angiograms: A method and evaluation on clinical images},
+      author={Mitrović, Uros˘ and S˘piclin, Z˘iga and Likar, Bos˘tjan and Pernus˘, Franjo},
+      journal={IEEE transactions on medical imaging},
+      volume={32},
+      number={8},
+      pages={1550--1563},
+      year={2013},
+      publisher={IEEE}
+    }
+
+``` python
+from diffdrrdata.ljubljana import LjubljanaDataset, Transforms
+
+# Load a subject from the LjubljanaDataset
+ljubljana = LjubljanaDataset(id_number=1)
+gt, pose, focal_len, height, width, delx, dely, x0, y0 = ljubljana[0]
+
+# Initialize the DRR module
+subsample = 8
+drr = DRR(
+    ljubljana.subject,
+    focal_len,
+    height // subsample,
+    delx * subsample,
+    width // subsample,
+    dely * subsample,
+    x0=y0,
+    y0=x0,
+)
+transform = Transforms(height // subsample, width // subsample)
+
+# Render a DRR from the ground truth camera pose
+img = drr(pose)
+gt, img = transform(gt), transform(img)
+plot_drr(torch.concat([gt, img]), title=["Downsampled X-ray", "DRR"])
+plt.show()
+```
+
+![](index_files/figure-commonmark/cell-3-output-1.png)

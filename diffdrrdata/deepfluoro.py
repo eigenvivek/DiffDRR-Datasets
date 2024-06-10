@@ -92,7 +92,8 @@ class DeepFluoroDataset(torch.utils.data.Dataset):
         pose = self.projections[f"{idx:03d}/gt-poses/cam-to-pelvis-vol"][:]
         pose = RigidTransform(torch.from_numpy(pose))
         pose = (
-            self.flip_z.compose(self.world2camera.inverse())
+            self.flip_z
+            .compose(self.world2camera.inverse())
             .compose(pose)
             .compose(self.anatomical2world)
         )

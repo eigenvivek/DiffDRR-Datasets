@@ -24,13 +24,15 @@ class DeepFluoroDataset(torch.utils.data.Dataset):
     A `torch.utils.data.Dataset` that stores the imaging data for subjects
     in the `DeepFluoro` dataset and provides an iterator over the X-ray
     fluoroscopy images and associated poses for each subject. Imaging data
-    can be passed to a `diffdrr.drr.DRR` to renderer DRRs.
+    can be passed to a `diffdrr.drr.DRR` to renderer DRRs from ground truth
+    camera poses.
     """
 
     def __init__(
         self,
         id_number: int,  # Subject ID in {1, ..., 6}
         preprocess: bool = True,  # Preprocess raw X-rays
+        batchless: bool = False,  # Return unbatched images and poses (e.g., to interface with a `torch.utils.data.DataLoader`)
         bone_attenuation_multiplier: float = 1.0,  # Scalar multiplier on density of high attenuation voxels
     ):
         super().__init__()
@@ -54,6 +56,7 @@ class DeepFluoroDataset(torch.utils.data.Dataset):
         if self.preprocess:
             self.height -= 100
             self.width -= 100
+        self.batchless = batchless
 
         # Miscellaneous transformation matrices for wrangling SE(3) poses
         self.flip_z = RigidTransform(
@@ -100,7 +103,10 @@ class DeepFluoroDataset(torch.utils.data.Dataset):
         img = img.unsqueeze(0).unsqueeze(0)
         if self.preprocess:
             img = preprocess(img)
-        return img, pose
+        if self.batchless:
+            return img[0], pose.matrix[0]
+        else:
+            return img, pose
 
     def rot_180_for_up(self, idx):
         return self.projections[f"{idx:03d}/rot-180-for-up"][()]
@@ -230,15 +236,7 @@ def load(id_number, bone_attenuation_multiplier):
 
 
 def preprocess(img, size=None, initial_energy=torch.tensor(65487.0)):
-    """
-    Recover the line integral: $L[i,j] = \log I_0 - \log I_f[i,j]$
-
-    (1) Remove edge due to collimator
-    (2) Smooth the image to make less noisy
-    (3) Subtract the log initial energy for each ray
-    (4) Recover the line integral image
-    (5) Rescale image to [0, 1]
-    """
+    """Convert X-ray fluoroscopy from the exponentiated form to the linear form."""
     img = center_crop(img, (1436, 1436))
     img = gaussian_blur(img, (5, 5), sigma=1.0)
     img = initial_energy.log() - img.log()

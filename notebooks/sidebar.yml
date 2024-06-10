@@ -3,5 +3,6 @@ website:
     contents:
       - index.ipynb
       - 00_deepfluoro.ipynb
-      - 01_utils.ipynb
+      - 01_ljubljana.ipynb
+      - 02_utils.ipynb
       - deepfluoro_camera_poses.html

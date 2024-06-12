@@ -23,10 +23,9 @@ pip install diffdrrdata
 
 ## DiffDRR
 
-`DiffDRR` is an differentiable X-ray renderer used for solving inverse
-problems in tomographic imaging. If you find
-[`DiffDRR`](https://github.com/eigenvivek/DiffDRR/) useful in your work,
-please cite our paper:
+[`DiffDRR`](https://github.com/eigenvivek/DiffDRR/) is an differentiable
+X-ray renderer used for solving inverse problems in tomographic imaging.
+If you find `DiffDRR` useful in your work, please cite our paper:
 
     @inproceedings{gopalakrishnan2022fast,
       title={Fast auto-differentiable digitally reconstructed radiographs for solving inverse problems in intraoperative imaging},
@@ -42,16 +41,17 @@ please cite our paper:
 We provide APIs to load the following open-source datasets into
 `DiffDRR`:
 
-| **Dataset**                                                                | **Anatomy**      | **\# of Subjects** | **\# of 2D Images** | **CTs** | **X-rays** | Fiducials |
-|----------------------------------------------------------------------------|------------------|:------------------:|:-------------------:|:-------:|:----------:|:---------:|
-| [`DeepFluoro`](https://github.com/rg2/DeepFluoroLabeling-IPCAI2020)        | pelvis           |         6          |         366         |   ✅    |     ✅     |    ❌     |
-| [`Ljubljana`](https://lit.fe.uni-lj.si/en/research/resources/3D-2D-GS-CA/) | neurovasculature |         10         |         20          |   ✅    |     ✅     |    ✅     |
+| **Dataset**                                                                | **Anatomy**      | **\# of Subjects** | **\# of 2D Images** | **CTs** | **X-rays** | **GT Fiducials** |
+|----------------------------------------------------------------------------|------------------|:------------------:|:-------------------:|:-------:|:----------:|:----------------:|
+| [`DeepFluoro`](https://github.com/rg2/DeepFluoroLabeling-IPCAI2020)        | pelvis           |         6          |         366         |   ✅    |     ✅     |        ❌        |
+| [`Ljubljana`](https://lit.fe.uni-lj.si/en/research/resources/3D-2D-GS-CA/) | neurovasculature |         10         |         20          |   ✅    |     ✅     |        ✅        |
 
 If you use any of these datasets, please cite the original papers.
 
 ### `DeepFluoro`
 
-`DeepFluoro` ([**Grupp et al.,
+[`DeepFluoro`](https://github.com/rg2/DeepFluoroLabeling-IPCAI2020)
+([**Grupp et al.,
 2020**](https://link.springer.com/article/10.1007/s11548-020-02162-7))
 provides paired X-ray fluoroscopy images and CT volume of the pelvis.
 The data were collected from six cadaveric subjects at John Hopkins
@@ -105,7 +105,8 @@ plt.show()
 
 ### `Ljubljana`
 
-`Ljubljana` (**[Mitrovic et al.,
+[`Ljubljana`](https://lit.fe.uni-lj.si/en/research/resources/3D-2D-GS-CA/)
+(**[Mitrovic et al.,
 2013](https://ieeexplore.ieee.org/abstract/document/6507588)**) provides
 paired 2D/3D digital subtraction angiography (DSA) images. The data were
 collected from 10 patients undergoing endovascular image-guided

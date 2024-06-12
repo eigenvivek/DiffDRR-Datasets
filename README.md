@@ -58,7 +58,7 @@ The data were collected from six cadaveric subjects at John Hopkins
 University. Ground truth camera poses were estimated with an offline
 registration process. A visualization of the X-ray / CT pairs in the
 `DeepFluoro` dataset is available
-[here](https://vivekg.dev/DiffDRR-Datasets/renders/deepfluoro.html).
+[here](https://vivekg.dev/DiffDRR-Datasets/deepfluoro_camera_poses.html).
 
     @article{grupp2020automatic,
       title={Automatic annotation of hip anatomy in fluoroscopy for robust and efficient 2D/3D registration},
@@ -139,8 +139,8 @@ drr = DRR(
     delx * subsample,
     width // subsample,
     dely * subsample,
-    x0=y0,
-    y0=x0,
+    x0=x0,
+    y0=y0,
 )
 transform = Transforms(height // subsample, width // subsample)
 

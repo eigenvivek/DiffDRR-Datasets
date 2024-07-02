@@ -62,7 +62,7 @@ class DeepFluoroDataset(torch.utils.data.Dataset):
         self.flip_z = RigidTransform(
             torch.tensor(
                 [
-                    [0, -1, 0, 0],
+                    [0, 1, 0, 0],
                     [1, 0, 0, 0],
                     [0, 0, -1, 0],
                     [0, 0, 0, 1],
@@ -140,19 +140,9 @@ def parse_volume(subject, bone_attenuation_multiplier):
 
     volume = ScalarImage(tensor=volume, affine=affine)
     labelmap = LabelMap(tensor=mask, affine=affine)
-    
-    isocenter = volume.get_center()
-
-    # Package the subject
-    subject = read(
-        volume=volume,
-        labelmap=labelmap,
-        bone_attenuation_multiplier=bone_attenuation_multiplier,
-        label_def=defns,
-        fiducials=fiducials,
-    )
 
     # Move the fiducials's isocenter to the origin in world coordinates
+    isocenter = volume.get_center()
     anatomical2world = RigidTransform(
         torch.tensor(
             [
@@ -163,6 +153,15 @@ def parse_volume(subject, bone_attenuation_multiplier):
             ],
             dtype=torch.float32,
         )
+    )
+
+    # Package the subject
+    subject = read(
+        volume=volume,
+        labelmap=labelmap,
+        bone_attenuation_multiplier=bone_attenuation_multiplier,
+        label_def=defns,
+        fiducials=fiducials,
     )
 
     return subject, anatomical2world

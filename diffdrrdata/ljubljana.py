@@ -7,12 +7,15 @@ __all__ = ['LjubljanaDataset', 'Transforms']
 from pathlib import Path
 
 import numpy as np
+import seaborn as sns
 import torch
 from diffdrr.data import read
 from diffdrr.pose import RigidTransform
 from torchio import ScalarImage, Subject
 
 from .utils import load_file
+
+sns.set_context("talk")
 
 # %% ../notebooks/01_ljubljana.ipynb 5
 class LjubljanaDataset(torch.utils.data.Dataset):
@@ -88,7 +91,9 @@ def parse_volume(f, subject_id):
     affine = torch.from_numpy(affine)
 
     volume = ScalarImage(tensor=volume, affine=affine)
+    isocenter = volume.get_center()
     fiducials = torch.from_numpy(subject["points"][:]).unsqueeze(0)
+    
     subject = read(
         volume=volume,
         labelmap=None,
@@ -97,7 +102,6 @@ def parse_volume(f, subject_id):
         orientation="AP",
     )
     # Move the Subject's isocenter to the origin in world coordinates
-    isocenter = volume.get_center()
     anatomical2world = RigidTransform(
         torch.tensor(
             [

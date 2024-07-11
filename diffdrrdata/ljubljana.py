@@ -35,7 +35,7 @@ class LjubljanaDataset(torch.utils.data.Dataset):
         self.flip_z = RigidTransform(
             torch.tensor(
                 [
-                    [0, -1, 0, 0],
+                    [0, 1, 0, 0],
                     [1, 0, 0, 0],
                     [0, 0, -1, 0],
                     [0, 0, 0, 1],
@@ -89,13 +89,7 @@ def parse_volume(f, subject_id):
 
     volume = ScalarImage(tensor=volume, affine=affine)
     fiducials = torch.from_numpy(subject["points"][:]).unsqueeze(0)
-    subject = read(
-        volume=volume,
-        labelmap=None,
-        bone_attenuation_multiplier=1.0,
-        fiducials=fiducials,
-        orientation="AP",
-    )
+
     # Move the Subject's isocenter to the origin in world coordinates
     isocenter = volume.get_center()
     anatomical2world = RigidTransform(
@@ -110,6 +104,15 @@ def parse_volume(f, subject_id):
         )
     )
 
+    # Package the subject
+    subject = read(
+        volume=volume,
+        labelmap=None,
+        bone_attenuation_multiplier=1.0,
+        fiducials=fiducials,
+        orientation="AP",
+    )
+    
     return subject, anatomical2world
 
 # %% ../notebooks/01_ljubljana.ipynb 7

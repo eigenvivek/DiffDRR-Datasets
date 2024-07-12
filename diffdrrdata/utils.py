@@ -55,10 +55,10 @@ def download_deepfluoro():
 # %% ../notebooks/02_utils.ipynb 7
 def download_ljubljana():
     data_home = get_data_home()
-    download_link = "https://drive.usercontent.google.com/download?id=1x585pGLI8QGk21qZ2oGwwQ9LMJ09Tqrx&export=download&authuser=0"
-    download_path = data_home / "ljubljana.h5"
+    download_link = "https://drive.usercontent.google.com/download?id=1x585pGLI8QGk21qZ2oGwwQ9LMJ09Tqrx&confirm=xxx"
+    download_path = data_home / "ljubljana.zip"
     subprocess.run(
-        f"wget -q --no-check-certificate -O {download_path} {download_link}".split(" ")
+        f"curl -s {download_link} -o {download_path} ".split(" ")
     )
     subprocess.run(f"unzip -o {download_path} -d {data_home}".split(" "))
     subprocess.run(f"rm {download_path}".split(" "))

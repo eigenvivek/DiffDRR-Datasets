@@ -5,4 +5,6 @@ website:
       - 00_deepfluoro.ipynb
       - 01_ljubljana.ipynb
       - 02_utils.ipynb
-      - deepfluoro_camera_poses.html
+      - section: renders
+        contents:
+          - renders/deepfluoro_camera_poses.html

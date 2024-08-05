@@ -33,6 +33,7 @@ class DeepFluoroDataset(torch.utils.data.Dataset):
         id_number: int,  # Subject ID in {1, ..., 6}
         preprocess: bool = True,  # Convert X-rays from exponentiated to linear form
         bone_attenuation_multiplier: float = 1.0,  # Scalar multiplier on density of high attenuation voxels (from `DiffDRR`, see [here](https://vivekg.dev/DiffDRR/tutorials/introduction.html#changing-the-appearance-of-the-rendered-drrs))
+        labels: int | list = None,  # Labels from the mask of structures to render
         batchless: bool = False,  # Return unbatched images and poses (e.g., to interface with a `torch.utils.data.DataLoader`)
     ):
         super().__init__()
@@ -50,7 +51,7 @@ class DeepFluoroDataset(torch.utils.data.Dataset):
             self.dely,
             self.x0,
             self.y0,
-        ) = load(id_number, bone_attenuation_multiplier)
+        ) = load(id_number, bone_attenuation_multiplier, labels)
 
         self.preprocess = preprocess
         if self.preprocess:
@@ -113,7 +114,7 @@ class DeepFluoroDataset(torch.utils.data.Dataset):
         return self.projections[f"{idx:03d}/rot-180-for-up"][()]
 
 # %% ../notebooks/00_deepfluoro.ipynb 8
-def parse_volume(subject, bone_attenuation_multiplier):
+def parse_volume(subject, bone_attenuation_multiplier, labels):
     # Get all parts of the volume
     volume = subject["vol/pixels"][:]
     volume = np.swapaxes(volume, 0, 2).copy()
@@ -159,6 +160,7 @@ def parse_volume(subject, bone_attenuation_multiplier):
     subject = read(
         volume=volume,
         labelmap=labelmap,
+        labels=labels,
         bone_attenuation_multiplier=bone_attenuation_multiplier,
         label_def=defns,
         fiducials=fiducials,
@@ -186,7 +188,7 @@ def parse_proj_params(f):
     )
 
 
-def load(id_number, bone_attenuation_multiplier):
+def load(id_number, bone_attenuation_multiplier, labels):
     f = load_file("ipcai_2020_full_res_data.h5")
 
     # Load dataset parameters
@@ -219,7 +221,7 @@ def load(id_number, bone_attenuation_multiplier):
     ][id_number - 1]
     subject = f[subject_id]
     projections = subject["projections"]
-    subject, anatomical2world = parse_volume(subject, bone_attenuation_multiplier)
+    subject, anatomical2world = parse_volume(subject, bone_attenuation_multiplier, labels)
 
     return (
         subject,

@@ -57,7 +57,9 @@ class LjubljanaDataset(torch.utils.data.Dataset):
         )
 
         if self.preprocess:
-            img += 1
+            img = img - img.mode().values.mode().values.item()  # Subtract background color
+            img = torch.clamp(img, -1, 0) + 1  # Restrict to [0, 1]
+            img += 1  # Convert to log-scale
             img = img.max().log() - img.log()
 
         pose = (
@@ -77,7 +79,7 @@ def parse_volume(f, subject_id):
     volume = subject["volume/pixels"][:]
     volume = volume[::-1].copy()
     volume = torch.from_numpy(volume).unsqueeze(0)
-    volume[volume < 250] = -1000.0
+    volume[volume < 1000] = 0.0  # Discard a lot of the background from the 3D DSA
 
     affine = np.eye((4))
     spacing = subject["volume/spacing"][:]
@@ -156,13 +158,13 @@ from torchvision.transforms import Compose, Lambda, Normalize, Resize
 
 
 class Transforms:
-    def __init__(self, height: int, width: int, eps: float = 1e-6):
+    def __init__(self, height: int, width: int, clamp: bool = False, linearize: bool = False, eps: float = 1e-6):
         """Standardize, resize, and normalize X-rays and DRRs before inputting to a deep learning model."""
         self.transforms = Compose(
             [
                 Lambda(lambda x: (x - x.min()) / (x.max() - x.min() + eps)),
                 Resize((height, width), antialias=True),
-                Normalize(mean=0.0774, std=0.0569),
+                Normalize(mean=0.0306, std=0.0564),
             ]
         )
 

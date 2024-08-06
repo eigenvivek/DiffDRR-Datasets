@@ -158,7 +158,7 @@ from torchvision.transforms import Compose, Lambda, Normalize, Resize
 
 
 class Transforms:
-    def __init__(self, height: int, width: int, clamp: bool = False, linearize: bool = False, eps: float = 1e-6):
+    def __init__(self, height: int, width: int, eps: float = 1e-6):
         """Standardize, resize, and normalize X-rays and DRRs before inputting to a deep learning model."""
         self.transforms = Compose(
             [

@@ -141,7 +141,7 @@ drr = DRR(
     delx * subsample,
     width // subsample,
     dely * subsample,
-    x0=-x0,
+    x0=x0,
     y0=y0,
     reverse_x_axis=False,
 )

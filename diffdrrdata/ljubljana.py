@@ -77,8 +77,8 @@ def parse_volume(f, subject_id):
 
     # Get the volume
     volume = subject["volume/pixels"][:]
-    volume = volume[::-1].copy()
-    volume = torch.from_numpy(volume).unsqueeze(0)
+    volume = volume.copy()
+    volume = torch.from_numpy(volume).unsqueeze(0).flip(1)
     volume[volume < 1000] = 0.0  # Discard a lot of the background from the 3D DSA
 
     affine = np.eye((4))

@@ -57,9 +57,7 @@ class LjubljanaDataset(torch.utils.data.Dataset):
         )
 
         if self.preprocess:
-            img = img - img.mode().values.mode().values.item()  # Subtract background color
-            img = torch.clamp(img, -1, 0) + 1  # Restrict to [0, 1]
-            img += 1  # Convert to log-scale
+            img += 1
             img = img.max().log() - img.log()
 
         pose = (
@@ -77,9 +75,9 @@ def parse_volume(f, subject_id):
 
     # Get the volume
     volume = subject["volume/pixels"][:]
-    volume = volume.copy()
-    volume = torch.from_numpy(volume).unsqueeze(0).flip(1)
-    volume[volume < 1000] = 0.0  # Discard a lot of the background from the 3D DSA
+    volume = volume[::-1].copy()
+    volume = torch.from_numpy(volume).unsqueeze(0)
+    volume[volume < 250] = -1000.0
 
     affine = np.eye((4))
     spacing = subject["volume/spacing"][:]
@@ -164,7 +162,7 @@ class Transforms:
             [
                 Lambda(lambda x: (x - x.min()) / (x.max() - x.min() + eps)),
                 Resize((height, width), antialias=True),
-                Normalize(mean=0.0306, std=0.0564),
+                Normalize(mean=0.0774, std=0.0569),
             ]
         )
 

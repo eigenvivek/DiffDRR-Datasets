@@ -9,13 +9,12 @@ from pathlib import Path
 import h5py
 import numpy as np
 import torch
-from torchio import LabelMap, ScalarImage, Subject
-from torchio.transforms.preprocessing import ToCanonical
-from torchvision.transforms.functional import center_crop, gaussian_blur
-
 from diffdrr.data import read
 from diffdrr.pose import RigidTransform
 from diffdrr.utils import parse_intrinsic_matrix
+from torchio import LabelMap, ScalarImage, Subject
+from torchio.transforms.preprocessing import ToCanonical
+from torchvision.transforms.functional import center_crop, gaussian_blur
 
 from .utils import load_file
 
@@ -65,7 +64,7 @@ class DeepFluoroDataset(torch.utils.data.Dataset):
             torch.tensor(
                 [
                     [0, 1, 0, 0],
-                    [-1, 0, 0, 0],
+                    [1, 0, 0, 0],
                     [0, 0, -1, 0],
                     [0, 0, 0, 1],
                 ]
@@ -94,12 +93,10 @@ class DeepFluoroDataset(torch.utils.data.Dataset):
         pose = self.projections[f"{idx:03d}/gt-poses/cam-to-pelvis-vol"][:]
         pose = RigidTransform(torch.from_numpy(pose))
         pose = (
-            self.rot_180
-            .compose(self.flip_z)
+            self.flip_z
             .compose(self.world2camera.inverse())
             .compose(pose)
             .compose(self.anatomical2world)
-            .compose(self.rot_180)
         )
         if self.rot_180_for_up(idx):
             img = torch.rot90(img, k=2)
@@ -121,11 +118,11 @@ def parse_volume(subject, bone_attenuation_multiplier, labels):
     # Get all parts of the volume
     volume = subject["vol/pixels"][:]
     volume = np.swapaxes(volume, 0, 2).copy()
-    volume = torch.from_numpy(volume).unsqueeze(0).flip(1).flip(2)
+    volume = torch.from_numpy(volume).unsqueeze(0)
 
     mask = subject["vol-seg/image/pixels"][:]
     mask = np.swapaxes(mask, 0, 2).copy()
-    mask = torch.from_numpy(mask).unsqueeze(0).flip(1).flip(2)
+    mask = torch.from_numpy(mask).unsqueeze(0)
 
     affine = np.eye(4)
     affine[:3, :3] = subject["vol/dir-mat"][:]
@@ -164,13 +161,10 @@ def parse_volume(subject, bone_attenuation_multiplier, labels):
         volume=volume,
         labelmap=labelmap,
         labels=labels,
-        orientation="PA",
         bone_attenuation_multiplier=bone_attenuation_multiplier,
         label_def=defns,
         fiducials=fiducials,
     )
-    reorient = RigidTransform(torch.diag(torch.tensor([-1.0, -1.0, 1.0, 1.0])))
-    subject.fiducials = reorient(subject.fiducials)
 
     return subject, anatomical2world
 

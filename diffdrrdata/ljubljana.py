@@ -35,8 +35,8 @@ class LjubljanaDataset(torch.utils.data.Dataset):
         self.flip_z = RigidTransform(
             torch.tensor(
                 [
-                    [0, 1, 0, 0],
-                    [1, 0, 0, 0],
+                    [-1, 0, 0, 0],
+                    [0, -1, 0, 0],
                     [0, 0, -1, 0],
                     [0, 0, 0, 1],
                 ]
@@ -118,7 +118,7 @@ def parse_volume(f, subject_id):
     return subject, anatomical2world
 
 # %% ../notebooks/01_ljubljana.ipynb 7
-from diffdrr.utils import parse_intrinsic_matrix
+from diffdrr.detector import parse_intrinsic_matrix
 
 
 def parse_proj(f, subject_id, view):

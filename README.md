@@ -79,7 +79,7 @@ from diffdrr.visualization import plot_drr
 from diffdrrdata.deepfluoro import DeepFluoroDataset, Transforms
 
 # Load a subject from the DeepFluoroDataset
-deepfluoro = DeepFluoroDataset(id_number=1, bone_attenuation_multiplier=2.5)
+deepfluoro = DeepFluoroDataset(id_number=1)
 
 # Initialize the DRR module
 subsample = 4
@@ -142,7 +142,6 @@ drr = DRR(
     dely * subsample,
     x0=x0,
     y0=y0,
-    reverse_x_axis=False,
 )
 transform = Transforms(height // subsample, width // subsample)
 

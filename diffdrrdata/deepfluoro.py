@@ -97,6 +97,7 @@ class DeepFluoroDataset(torch.utils.data.Dataset):
             .compose(self.world2camera.inverse())
             .compose(pose)
             .compose(self.anatomical2world)
+            .compose(self.rot_180)
         )
         if self.rot_180_for_up(idx):
             img = torch.rot90(img, k=2)
@@ -118,11 +119,11 @@ def parse_volume(subject, bone_attenuation_multiplier, labels):
     # Get all parts of the volume
     volume = subject["vol/pixels"][:]
     volume = np.swapaxes(volume, 0, 2).copy()
-    volume = torch.from_numpy(volume).unsqueeze(0)  # .flip(1).flip(2)
+    volume = torch.from_numpy(volume).unsqueeze(0).flip(1).flip(2)
 
     mask = subject["vol-seg/image/pixels"][:]
     mask = np.swapaxes(mask, 0, 2).copy()
-    mask = torch.from_numpy(mask).unsqueeze(0)  # .flip(1).flip(2)
+    mask = torch.from_numpy(mask).unsqueeze(0).flip(1).flip(2)
 
     affine = np.eye(4)
     affine[:3, :3] = subject["vol/dir-mat"][:]
@@ -166,6 +167,8 @@ def parse_volume(subject, bone_attenuation_multiplier, labels):
         label_def=defns,
         fiducials=fiducials,
     )
+    reorient = RigidTransform(torch.diag(torch.tensor([-1.0, -1.0, 1.0, 1.0])))
+    subject.fiducials = reorient(subject.fiducials)
 
     return subject, anatomical2world
 

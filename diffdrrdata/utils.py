@@ -11,8 +11,8 @@ import h5py
 
 # %% ../notebooks/02_utils.ipynb 4
 def get_data_home() -> Path:
-    """By default, datasets are saved in `~/diffdrr_data`."""
-    data_home = Path("~/diffdrr_data").expanduser()
+    """By default, datasets are saved in `~/user/diffdrr_data`."""
+    data_home = data_home = Path("~/user/diffdrr_data").expanduser()
     data_home.mkdir(exist_ok=True)
     return data_home
 

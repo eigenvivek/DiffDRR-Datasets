@@ -11,8 +11,8 @@ import h5py
 
 # %% ../notebooks/02_utils.ipynb 4
 def get_data_home() -> Path:
-    """By default, datasets are saved in `~/diffdrr_data`."""
-    data_home = Path("~/diffdrr_data").expanduser()
+    """By default, datasets are saved in `~/user/diffdrr_data`."""
+    data_home = data_home = Path("~/user/diffdrr_data").expanduser()
     data_home.mkdir(exist_ok=True)
     return data_home
 
@@ -33,7 +33,7 @@ def load_file(filename: str):
         try:
             f = h5py.File(file_path)
         except FileNotFoundError:
-            print(f"Downloading DeepFluoro dataset (~2.5 GB) to {file_path}")
+            print(f"Downloading Ljubljana dataset (~1.0 GB) to {file_path}")
             download_ljubljana()
             f = h5py.File(file_path)
     else:
@@ -47,7 +47,7 @@ def download_deepfluoro():
     download_link = "http://archive.data.jhu.edu/api/access/datafile/:persistentId/?persistentId=doi:10.7281/T1/IFSXNV/EAN9GH"
     download_path = data_home / "ipcai_2020_full_res_data.zip"
     subprocess.run(
-        f"wget -q --no-check-certificate -O {download_path} {download_link}".split(" ")
+        f"wget --no-check-certificate -O {download_path} {download_link}".split(" ")
     )
     subprocess.run(f"unzip -o {download_path} -d {data_home}".split(" "))
     subprocess.run(f"rm {download_path}".split(" "))
@@ -58,7 +58,7 @@ def download_ljubljana():
     download_link = "https://drive.usercontent.google.com/download?id=1x585pGLI8QGk21qZ2oGwwQ9LMJ09Tqrx&confirm=xxx"
     download_path = data_home / "ljubljana.zip"
     subprocess.run(
-        f"curl -s {download_link} -o {download_path} ".split(" ")
+        f"curl {download_link} -o {download_path} ".split(" ")
     )
     subprocess.run(f"unzip -o {download_path} -d {data_home}".split(" "))
     subprocess.run(f"rm {download_path}".split(" "))

@@ -3,6 +3,21 @@ channels:
   - conda-forge
 dependencies:
   - pip
+  - pytorch>=2.2
+  - einops
+  - torchvision
+  - torchio
+  - kornia
+  - timm
+  - numpy
+  - matplotlib
+  - seaborn
+  - imageio
+  - fastcore
+  - scipy
+  - tqdm
+  - pyvista
+  - vtk
   - h5py
   - pip:
     - diffdrr

@@ -1,3 +1,8 @@
+> [!WARNING]
+>
+> `diffdrr-datasets` is no longer maintained. For the most up-to-date version of DiffDRR-compatible 2D/3D registration
+> datasets (now with more anatomical regions), please use [`xvr-data` on HuggingFace](https://huggingface.co/datasets/eigenvivek/xvr-data).
+
 DiffDRR Datasets
 ================
 
